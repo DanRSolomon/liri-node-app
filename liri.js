@@ -2,13 +2,12 @@ require("dotenv").config();
 
 var fs = require("fs");
 var moment = require('moment');
+var axios = require("axios");
 
 var action = process.argv[2];
 var value = process.argv[3];
 
 function concert() {
-
-    var axios = require("axios");
     var queryUrl = "https://rest.bandsintown.com/artists/" + value + "/events?app_id=codingbootcamp";
     axios.get(queryUrl).then(
         function (response) {
@@ -20,7 +19,29 @@ function concert() {
                 var concertDate = moment(concertInfo.datetime).format('MM/DD/YYYY');
                 console.log(`Date: ${concertDate}.`);
             } else {
-                console.log(`I'm sorry, there was no concert information for ${value}.`)
+                console.log(`\nI'm sorry, there was no concert information for ${value}. Please try a different band/artist.`);
+            };
+        }
+    );
+
+};
+
+function movie() {
+    var queryUrl = "http://www.omdbapi.com/?t=" + value + "&y=&plot=short&apikey=trilogy";
+    axios.get(queryUrl).then(
+        function (response) {
+            var movieInfo = response.data;
+            if (movieInfo.Title != undefined) {
+                console.log(`\nTitle: ${movieInfo.Title}.`);
+                console.log(`Release Year: ${movieInfo.Year}.`);
+                console.log(`IMDB Rating: ${movieInfo.Ratings[0].Value}.`);
+                console.log(`Rotten Tomatoes Rating: ${movieInfo.Ratings[1].Value}.`);
+                console.log(`Country: ${movieInfo.Country}.`);
+                console.log(`Language: ${movieInfo.Language}.`);
+                console.log(`Plot: ${movieInfo.Plot}`);
+                console.log(`Actors: ${movieInfo.Actors}.`);
+            } else {
+                console.log(`\nI'm sorry, there was no movie information for ${value}. Please try a different movie.`)
             }
         }
     );
