@@ -1,9 +1,31 @@
 require("dotenv").config();
 
 var fs = require("fs");
+var moment = require('moment');
 
 var action = process.argv[2];
 var value = process.argv[3];
+
+function concert() {
+
+    var axios = require("axios");
+    var queryUrl = "https://rest.bandsintown.com/artists/" + value + "/events?app_id=codingbootcamp";
+    axios.get(queryUrl).then(
+        function (response) {
+            var concertInfo = response.data[0];
+            if (concertInfo != undefined) {
+                console.log(`\nUpcoming concert info for: ${value}.`);
+                console.log(`Next concert venue: ${concertInfo.venue.name}.`);
+                console.log(`Location: ${concertInfo.venue.city}, ${concertInfo.venue.region}.`);
+                var concertDate = moment(concertInfo.datetime).format('MM/DD/YYYY');
+                console.log(`Date: ${concertDate}.`);
+            } else {
+                console.log(`I'm sorry, there was no concert information for ${value}.`)
+            }
+        }
+    );
+
+}
 
 switch (action) {
     case "concert-this":
