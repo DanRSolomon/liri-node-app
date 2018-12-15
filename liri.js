@@ -1,6 +1,5 @@
 require("dotenv").config();
 
-
 var fs = require("fs");
 var moment = require('moment');
 var axios = require("axios");
@@ -58,7 +57,7 @@ function song(song, callback) {
                     (`Preview link to song: ${songLink}`),
                     (`Album Name: ${songInfo.album.name}.`)
                 ].join("\n");
-                
+
             } else {
                 var songData = [
                     (`I'm sorry, there was no song information for ${song}. Please try a different song.`)
@@ -133,16 +132,18 @@ function doWhatItSays(afterSearch) {
     });
 };
 
-
-function wrongChoice() {
-    console.log(`\n--------------------`);
-    console.log("Please us one of the following commands to use this search:");
-    console.log('- concert-this "<artist/band name here>"');
-    console.log('- spotify-this-song "<song title here>"');
-    console.log('- movie-this "<movie title here>"');
-    console.log('- do-what-it-says');
-    console.log('\nBe sure to put the artist/song/movie title in quotes.');
-    console.log(`--------------------`);
+function wrongChoice(callback) {
+    var wrongChoiceData = [
+        ("Please us one of the following commands to use this search:"),
+        ('- concert-this "<artist/band name here>"'),
+        ('- spotify-this-song "<song title here>"'),
+        ('- movie-this "<movie title here>"'),
+        ('- do-what-it-says'),
+        ('\nBe sure to put the artist/song/movie title in quotes.'),
+    ].join("\n");
+    if (typeof callback === "function") {
+        callback(wrongChoiceData);
+    }
 };
 
 var divider = "\n\n------------------------------------------------------------\n\n";
@@ -179,28 +180,5 @@ switch (action) {
         doWhatItSays(afterSearch);
         break;
     default:
-        wrongChoice();
-}
-
-
-
-// fs.readFile("keys.js", "utf8", function(error, keys) {
-
-//     // If the code experiences any errors it will log the error to the console.
-//     if (error) {
-//       return console.log(error);
-//     }
-
-//     // We will then print the contents of data
-//     console.log(keys);
-
-//     // Then split it by commas (to make it more readable)
-//     var keysArr = keys.split(",");
-
-//     // We will then re-display the content as an array for later use.
-//     console.log(keysArr);
-
-//     // var spotify = new Spotify(keys.spotify);
-//     // console.log(spotify);
-
-//   });
+        wrongChoice(afterSearch);
+};
