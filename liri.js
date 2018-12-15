@@ -12,88 +12,101 @@ var keys = require("./keys.js");
 var action = process.argv[2];
 var request = process.argv[3];
 
-function concert(bandName) {
+function concert(bandName, callback) {
     var queryUrl = "https://rest.bandsintown.com/artists/" + bandName + "/events?app_id=codingbootcamp";
     axios.get(queryUrl).then(
         function (response) {
             var concertInfo = response.data[0];
             if (concertInfo != undefined) {
-                console.log(`\n--------------------`);
-                console.log(`Upcoming concert info for: ${concertInfo.lineup[0]}.`);
-                console.log(`Next concert venue: ${concertInfo.venue.name}.`);
-                console.log(`Location: ${concertInfo.venue.city}, ${concertInfo.venue.region}.`);
                 var concertDate = moment(concertInfo.datetime).format('MM/DD/YYYY');
-                console.log(`Date: ${concertDate}.`);
-                console.log(`--------------------`);
+                var bandData = [
+                    (`Upcoming concert info for: ${concertInfo.lineup[0]}.`),
+                    (`Next concert venue: ${concertInfo.venue.name}.`),
+                    (`Location: ${concertInfo.venue.city}, ${concertInfo.venue.region}.`),
+                    (`Date: ${concertDate}.`)
+                ].join("\n");
 
             } else {
-                console.log(`\n--------------------`);
-                console.log(`I'm sorry, there was no concert information for ${bandName}. Please try a different band/artist.`);
-                console.log(`--------------------`);
+                var bandData = [
+                    (`I'm sorry, there was no concert information for ${bandName}. Please try a different band/artist.`),
+                ].join("\n");
             };
+
+            if (typeof callback === "function") {
+                callback(bandData);
+            }
         }
     );
 
 };
 
-function song(song) {
+function song(song, callback) {
     var spotify = new Spotify(keys.spotify);
     spotify
         .search({ type: 'track', query: song, limit: 1 })
         .then(function (response) {
             var songInfo = response.tracks.items[0]
             if (songInfo != undefined) {
-                console.log(`\n--------------------`);
-                console.log(`Artist: ${songInfo.artists[0].name}.`);
-                console.log(`Song Name: ${songInfo.name}.`);
                 if (songInfo.preview_url != undefined) {
-                    console.log(`Preview link to song: ${songInfo.preview_url}`);
+                    var songLink = songInfo.preview_url;
                 } else {
-                    console.log("No preview available.")
+                    var songLink = "No preview available.";
                 };
-                console.log(`Album Name: ${songInfo.album.name}.`);
-                console.log(`--------------------`);
+                var songData = [
+                    (`Artist: ${songInfo.artists[0].name}.`),
+                    (`Song Name: ${songInfo.name}.`),
+                    (`Preview link to song: ${songLink}`),
+                    (`Album Name: ${songInfo.album.name}.`)
+                ].join("\n");
+                
             } else {
-                console.log(`\n--------------------`);
-                console.log(`I'm sorry, there was no song information for ${song}. Please try a different song.`)
-                console.log(`--------------------`);
+                var songData = [
+                    (`I'm sorry, there was no song information for ${song}. Please try a different song.`)
+                ].join("\n");
             };
+            if (typeof callback === "function") {
+                callback(songData);
+            }
         })
         .catch(function (err) {
             console.log(err);
         });
 };
 
-
-
-function movie(movieTitle) {
+function movie(movieTitle, callback) {
     var queryUrl = "http://www.omdbapi.com/?t=" + movieTitle + "&y=&plot=short&apikey=trilogy";
     axios.get(queryUrl).then(
         function (response) {
             var movieInfo = response.data;
             if (movieInfo.Title != undefined) {
-                console.log(`\n--------------------`);
-                console.log(`Title: ${movieInfo.Title}.`);
-                console.log(`Release Year: ${movieInfo.Year}.`);
-                console.log(`IMDB Rating: ${movieInfo.Ratings[0].Value}.`);
                 if (movieInfo.Ratings[1] != undefined) {
-                    console.log(`Rotten Tomatoes Rating: ${movieInfo.Ratings[1].Value}.`);
-                };
-                console.log(`Country: ${movieInfo.Country}.`);
-                console.log(`Language: ${movieInfo.Language}.`);
-                console.log(`Plot: ${movieInfo.Plot}`);
-                console.log(`Actors: ${movieInfo.Actors}.`);
-                console.log(`--------------------`);
+                    var rottenTomRating = movieInfo.Ratings[1].Value
+                } else {
+                    var rottenTomRating = "No rating available.";
+                }
+                var movieData = [
+                    (`Title: ${movieInfo.Title}.`),
+                    (`Release Year: ${movieInfo.Year}.`),
+                    (`IMDB Rating: ${movieInfo.Ratings[0].Value}.`),
+                    (`Rotten Tomatoes Rating: ${rottenTomRating}.`),
+                    (`Country: ${movieInfo.Country}.`),
+                    (`Language: ${movieInfo.Language}.`),
+                    (`Plot: ${movieInfo.Plot}`),
+                    (`Actors: ${movieInfo.Actors}.`)
+                ].join("\n");
             } else {
-                console.log(`\n--------------------`);
-                console.log(`I'm sorry, there was no movie information for ${movieTitle}. Please try a different movie.`);
-                console.log(`--------------------`);
+                var movieData = [
+                    (`I'm sorry, there was no movie information for ${movieTitle}. Please try a different movie.`)
+                ].join("\n");
             };
+            if (typeof callback === "function") {
+                callback(movieData);
+            }
         }
     );
 };
 
-function doWhatItSays() {
+function doWhatItSays(afterSearch) {
     fs.readFile("random.txt", "utf8", function (err, data) {
         if (err) {
             return console.log(err);
@@ -102,23 +115,24 @@ function doWhatItSays() {
         switch (data[0]) {
             case "concert-this":
                 data[1] = data[1].slice(1, -1);
-                concert(data[1]);
+                concert(data[1], afterSearch);
                 break;
 
             case "spotify-this-song":
                 data[1] = data[1].slice(1, -1);
-                song(data[1]);
+                song(data[1], afterSearch);
                 break;
 
             case "movie-this":
                 data[1] = data[1].slice(1, -1);
-                movie(data[1]);
+                movie(data[1], afterSearch);
                 break;
             default:
                 wrongChoice();
         }
     });
 };
+
 
 function wrongChoice() {
     console.log(`\n--------------------`);
@@ -131,30 +145,38 @@ function wrongChoice() {
     console.log(`--------------------`);
 };
 
+var divider = "\n\n------------------------------------------------------------\n\n";
+function afterSearch(data) {
+    fs.appendFile("log.txt", data + divider, function (err) {
+        if (err) throw err;
+        console.log(divider + data + divider);
+    });
+};
+
 switch (action) {
     case "concert-this":
         if (request === undefined) {
             request = "ace of base";
         }
-        concert(request);
+        concert(request, afterSearch);
         break;
 
     case "spotify-this-song":
         if (request === undefined) {
             request = "All That She Wants";
         }
-        song(request);
+        song(request, afterSearch);
         break;
 
     case "movie-this":
         if (request === undefined) {
             request = "Mr. Nobody";
         }
-        movie(request);
+        movie(request, afterSearch);
         break;
 
     case "do-what-it-says":
-        doWhatItSays();
+        doWhatItSays(afterSearch);
         break;
     default:
         wrongChoice();
