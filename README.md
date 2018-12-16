@@ -1,6 +1,6 @@
 # liri-node-app
 
-Liri is a student project designed to learn how to use Node.js. It is a command line node app that takes in parameters and gives back data. Liri is able to find concert, song, and movie information based on the commands it is given. Anyone interested in exploring how the code works is welcome to clone the repository. One thing you will need to do for yourself is create your own .env file and supply your own Spotify api keys.
+Liri is a student project designed to learn how to use Node.js. It is a command line node app that takes in parameters and gives back data. Liri is able to find concert, song, and movie information based on the commands it is given. Anyone interested in exploring how the code works is welcome to clone the repository. One thing you will need to do for yourself is create your own .env file to hold your own Spotify api keys.
 
 Liri recognizes four primary commands: concert-this, spotify-this-song, movie-this, and do-what-it-says.
 
