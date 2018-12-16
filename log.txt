@@ -12,3 +12,24 @@ Date: 01/16/2019.
 
 ------------------------------------------------------------
 
+Artist: Foo Fighters.
+Song Name: Everlong.
+Preview link to song: https://p.scdn.co/mp3-preview/4a2dc307a71393a695d69b16407cd73e1e234941?cid=f8c046733d3a48aca631c4da51489dfe
+Album Name: The Colour And The Shape (Expanded Edition).
+
+------------------------------------------------------------
+
+Upcoming concert info for: everlong.
+Next concert venue: 金沢ｖａｎｖａｎＶ４.
+Location: 金沢市, 石川県.
+Date: 12/16/2018.
+
+------------------------------------------------------------
+
+Upcoming concert info for: Foo Fighters.
+Next concert venue: I AM THE HIGHWAY: A TRIBUTE TO CHRIS CORNELL.
+Location: Los Angeles, CA.
+Date: 01/16/2019.
+
+------------------------------------------------------------
+
