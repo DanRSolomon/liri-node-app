@@ -11,4 +11,4 @@ Below are details of how to use each command and examples of what the output wil
 Concert-this searches for a band's next event using the Bands In Town Artist Events API.
 On the command line, type: node liri.js concert-this "<artist/band name>"
 
-Here is the result of: concert-this "foo fighters" ![concert1-image](/images/concert-this-1.jpg) 
+Here is the result of: concert-this "foo fighters" ![concert1-image](/images/concert-this-1.JPG) 
